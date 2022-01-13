@@ -30,9 +30,9 @@ async function runAction(): Promise<void> {
     const notTimedout = (): boolean =>
       Date.now() - dispatchedAt.getTime() < timeout * 1000
 
-    /* eslint-disable no-inner-declarations */
-    async function runPeriodically(time: number): Promise<void> {
-      let run: any // TODO(pweyrich): find the proper type!
+    /* eslint-disable no-inner-declarations, @typescript-eslint/no-explicit-any */
+    async function runPeriodically(time: number): Promise<any> {
+      let run // TODO(pweyrich): find the proper type!
       while (!(run && run.status === 'completed' && notTimedout())) {
         await wait(time)
         // check whether we already got the related run (in particular its id) in the list
@@ -59,7 +59,7 @@ async function runAction(): Promise<void> {
             )
           }
         } else {
-          const result = await github.rest.actions.getWorkflowRun({
+          const result: any = await github.rest.actions.getWorkflowRun({
             owner,
             repo,
             run_id: run.id
