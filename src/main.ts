@@ -72,7 +72,7 @@ async function run(): Promise<void> {
           `Action timed out. A related workflow run could not be found within ${timeout} seconds.`
         )
       }
-      if (run.status !== 'completed') {
+      if (run?.status !== 'completed') {
         // timed out!!
         core.setFailed(
           `Action timed out. The workflow took more than ${timeout} seconds to complete.`
