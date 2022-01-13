@@ -4,6 +4,6 @@ export async function wait(milliseconds: number): Promise<void> {
       throw new Error('milliseconds not a number')
     }
 
-    setTimeout(() => resolve, milliseconds)
+    setTimeout(() => resolve(), milliseconds)
   })
 }
