@@ -23,8 +23,7 @@ jobs:
       - uses: ./
         with:
           owner: plentymarkets
-          repo: idk
-          workflow_id: file-name.yml
-          ref: branch/to/checkout
-          trigger-workflow: false
-          timeout: 10
+          repo: trigger-worfklow-and-wait
+          workflow_id: dummy.yml
+          ref: ${{github.ref_name}}
+          timeout: 25
