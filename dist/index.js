@@ -49,17 +49,20 @@ function run() {
             const workflow_id = core.getInput('workflow_id');
             const interval = parseInt(core.getInput('interval'), 10);
             const timeout = parseInt(core.getInput('timeout'), 10);
+            const triggerWorkflow = Boolean(core.getInput('trigger-workflow'));
             // store time when we trigger the workflow
             const dispatchedAt = new Date();
             // get authenticated octokit client
             const github = octokit.getOctokit(token);
-            // create a workflow_dispatch event
-            yield github.rest.actions.createWorkflowDispatch({
-                owner,
-                repo,
-                workflow_id,
-                ref
-            });
+            // create a workflow_dispatch event if requested
+            if (triggerWorkflow) {
+                yield github.rest.actions.createWorkflowDispatch({
+                    owner,
+                    repo,
+                    workflow_id,
+                    ref
+                });
+            }
             const notTimedout = () => Date.now() - dispatchedAt.getTime() < timeout * 1000;
             /* eslint-disable no-inner-declarations, @typescript-eslint/no-explicit-any */
             function runPeriodically(time) {
