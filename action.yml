@@ -26,6 +26,10 @@ inputs:
     description: Timeout after the given amount of seconds.
     default: '300'
     required: false
+  trigger-workflow:
+    description: Whether to trigger the workflow via worfklow_dispatch event
+    default: 'true'
+    required: false
 
 runs:
   using: 'node12'

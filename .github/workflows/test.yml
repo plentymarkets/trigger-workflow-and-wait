@@ -26,3 +26,5 @@ jobs:
           repo: idk
           workflow_id: file-name.yml
           ref: branch/to/checkout
+          trigger-workflow: false
+          timeout: 10
