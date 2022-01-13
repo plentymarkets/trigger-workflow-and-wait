@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import * as octokit from '@actions/github'
 import {wait} from './wait'
 
-async function run(): Promise<void> {
+async function runAction(): Promise<void> {
   try {
     // read inputs
     const token = core.getInput('token')
@@ -27,10 +27,11 @@ async function run(): Promise<void> {
       ref
     })
 
-    const notTimedout = () =>
+    const notTimedout = (): boolean =>
       Date.now() - dispatchedAt.getTime() < timeout * 1000
 
-    async function runPeriodically(time: number) {
+    /* eslint-disable no-inner-declarations */
+    async function runPeriodically(time: number): Promise<void> {
       let run: any // TODO(pweyrich): find the proper type!
       while (!(run && run.status === 'completed' && notTimedout())) {
         await wait(time)
@@ -93,4 +94,4 @@ async function run(): Promise<void> {
   }
 }
 
-run()
+runAction()
