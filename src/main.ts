@@ -86,7 +86,7 @@ async function run(): Promise<void> {
       return run
     }
 
-    // start the loop - get the workflow run and check the status until it either failed or succeeded
+    // start the loop - get the workflow run, wait for it to complete and report the status.
     return await runPeriodically(interval * 1000)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
