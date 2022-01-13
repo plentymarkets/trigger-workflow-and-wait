@@ -54,7 +54,7 @@ async function run(): Promise<void> {
           })
           if (run) {
             core.info(
-              `Related workflow run found. See ${run.html_url} for details.`
+              `Related workflow run found. See ${run.html_url} for details. Waiting for its completion now.`
             )
           }
         } else {
@@ -64,6 +64,7 @@ async function run(): Promise<void> {
             run_id: run.id
           })
           run = result.data
+          core.info(`Current status: ${run.status}`)
         }
       }
       if (!run) {
