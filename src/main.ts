@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import * as octokit from '@actions/github'
 import {wait} from './wait'
 
-async function runAction(): Promise<void> {
+async function run(): Promise<void> {
   try {
     // read inputs
     const token = core.getInput('token')
@@ -32,11 +32,13 @@ async function runAction(): Promise<void> {
 
     /* eslint-disable no-inner-declarations, @typescript-eslint/no-explicit-any */
     async function runPeriodically(time: number): Promise<any> {
-      let run // TODO(pweyrich): find the proper type!
-      while (!(run && run.status === 'completed' && notTimedout())) {
+      let workflowRun // TODO(pweyrich): find the proper type!
+      while (
+        !(workflowRun && workflowRun.status === 'completed' && notTimedout())
+      ) {
         await wait(time)
         // check whether we already got the related run (in particular its id) in the list
-        if (!run) {
+        if (!workflowRun) {
           // TODO: there's a param `created` which may be used to query for runs started after a certain point in time
           // unfortunately this param is not described in the docs
           // see https://octokit.github.io/rest.js/v18#actions-list-workflow-runs for reference
@@ -49,42 +51,44 @@ async function runAction(): Promise<void> {
           })
           const runs = result.data.workflow_runs
           // check whether there's a run in the list, that has been created after we send the workflow_dispatch event.
-          run = runs.find(r => {
+          workflowRun = runs.find(r => {
             const runStartedAt = new Date(r.run_started_at as string)
             return runStartedAt.getTime() >= dispatchedAt.getTime()
           })
-          if (run) {
+          if (workflowRun) {
             core.info(
-              `Related workflow run found. See ${run.html_url} for details. Waiting for its completion now.`
+              `Related workflow run found. See ${workflowRun.html_url} for details. Waiting for its completion now.`
             )
           }
         } else {
           const result: any = await github.rest.actions.getWorkflowRun({
             owner,
             repo,
-            run_id: run.id
+            run_id: workflowRun.id
           })
-          run = result.data
-          core.info(`Current status: ${run.status}`)
+          workflowRun = result.data
+          core.info(`Current status: ${workflowRun.status}`)
         }
       }
-      if (!run) {
+      if (!workflowRun) {
         // timed out!!
         core.setFailed(
           `Action timed out. A related workflow run could not be found within ${timeout} seconds.`
         )
       }
-      if (run?.status !== 'completed') {
+      if (workflowRun?.status !== 'completed') {
         // timed out!!
         core.setFailed(
           `Action timed out. The workflow took more than ${timeout} seconds to complete.`
         )
       }
-      if (run?.conclusion === 'failure') {
+      if (workflowRun?.conclusion === 'failure') {
         // watched workflow run failed!
-        core.setFailed(`Workflow run failed. See ${run.html_url} for details.`)
+        core.setFailed(
+          `Workflow run failed. See ${workflowRun.html_url} for details.`
+        )
       }
-      return run
+      return workflowRun
     }
 
     // start the loop - get the workflow run, wait for it to complete and report the status.
@@ -94,4 +98,4 @@ async function runAction(): Promise<void> {
   }
 }
 
-runAction()
+run()
