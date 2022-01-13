@@ -48,8 +48,8 @@ async function run(): Promise<void> {
           })
           const runs = result.data.workflow_runs
           // check whether there's a run in the list, that has been created after we send the workflow_dispatch event.
-          run = runs.find(run => {
-            const runStartedAt = new Date(run!.run_started_at as string)
+          run = runs.find(r => {
+            const runStartedAt = new Date(r.run_started_at as string)
             return runStartedAt.getTime() >= dispatchedAt.getTime()
           })
           if (run) {
