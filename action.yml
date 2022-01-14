@@ -1,4 +1,4 @@
-name: 'trigger-worfklow-and-wait'
+name: 'Trigger workflow and wait'
 description: 'Triggers a workflow and wait for it to complete.'
 author: 'plentymarkets'
 inputs:
