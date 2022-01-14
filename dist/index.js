@@ -38,6 +38,10 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const octokit = __importStar(__nccwpck_require__(5438));
 const wait_1 = __nccwpck_require__(5817);
+function isTimedout(startTime, timeout) {
+    const passedTime = new Date().getTime() - startTime.getTime();
+    return passedTime > timeout * 1000;
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -50,15 +54,17 @@ function run() {
             const interval = parseInt(core.getInput('interval'), 10);
             const timeout = parseInt(core.getInput('timeout'), 10);
             const triggerWorkflow = core.getBooleanInput('trigger-workflow');
-            core.startGroup('Read inputs');
-            core.debug(`owner: ${owner}`);
-            core.debug(`repo: ${repo}`);
-            core.debug(`ref: ${ref}`);
-            core.debug(`workflow_id: ${workflow_id}`);
-            core.debug(`interval: ${interval}`);
-            core.debug(`timeout: ${timeout}`);
-            core.debug(`trigger-workflow: ${triggerWorkflow}`);
-            core.endGroup();
+            if (core.isDebug()) {
+                core.startGroup('Read inputs');
+                core.debug(`owner: ${owner}`);
+                core.debug(`repo: ${repo}`);
+                core.debug(`ref: ${ref}`);
+                core.debug(`workflow_id: ${workflow_id}`);
+                core.debug(`interval: ${interval}`);
+                core.debug(`timeout: ${timeout}`);
+                core.debug(`trigger-workflow: ${triggerWorkflow}`);
+                core.endGroup();
+            }
             // store time when we trigger the workflow
             const dispatchedAt = new Date();
             // get authenticated octokit client
@@ -72,13 +78,13 @@ function run() {
                     ref
                 });
             }
-            const notTimedout = () => Date.now() - dispatchedAt.getTime() < timeout * 1000;
             /* eslint-disable no-inner-declarations, @typescript-eslint/no-explicit-any */
             function runPeriodically(time) {
                 return __awaiter(this, void 0, void 0, function* () {
                     let iterationCount = 0;
                     let workflowRun; // TODO(pweyrich): find the proper type!
-                    while ((workflowRun === null || workflowRun === void 0 ? void 0 : workflowRun.status) !== 'completed' && notTimedout()) {
+                    while ((workflowRun === null || workflowRun === void 0 ? void 0 : workflowRun.status) !== 'completed' &&
+                        !isTimedout(dispatchedAt, timeout)) {
                         iterationCount++;
                         core.debug(`Iteration ${iterationCount}`);
                         yield (0, wait_1.wait)(time);

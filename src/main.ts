@@ -2,6 +2,11 @@ import * as core from '@actions/core'
 import * as octokit from '@actions/github'
 import {wait} from './wait'
 
+function isTimedout(startTime: Date, timeout: number): boolean {
+  const passedTime = new Date().getTime() - startTime.getTime()
+  return passedTime > timeout * 1000
+}
+
 async function run(): Promise<void> {
   try {
     // read inputs
@@ -14,15 +19,17 @@ async function run(): Promise<void> {
     const timeout = parseInt(core.getInput('timeout'), 10)
     const triggerWorkflow = core.getBooleanInput('trigger-workflow')
 
-    core.startGroup('Read inputs')
-    core.debug(`owner: ${owner}`)
-    core.debug(`repo: ${repo}`)
-    core.debug(`ref: ${ref}`)
-    core.debug(`workflow_id: ${workflow_id}`)
-    core.debug(`interval: ${interval}`)
-    core.debug(`timeout: ${timeout}`)
-    core.debug(`trigger-workflow: ${triggerWorkflow}`)
-    core.endGroup()
+    if (core.isDebug()) {
+      core.startGroup('Read inputs')
+      core.debug(`owner: ${owner}`)
+      core.debug(`repo: ${repo}`)
+      core.debug(`ref: ${ref}`)
+      core.debug(`workflow_id: ${workflow_id}`)
+      core.debug(`interval: ${interval}`)
+      core.debug(`timeout: ${timeout}`)
+      core.debug(`trigger-workflow: ${triggerWorkflow}`)
+      core.endGroup()
+    }
 
     // store time when we trigger the workflow
     const dispatchedAt = new Date()
@@ -40,15 +47,15 @@ async function run(): Promise<void> {
       })
     }
 
-    const notTimedout = (): boolean =>
-      Date.now() - dispatchedAt.getTime() < timeout * 1000
-
     /* eslint-disable no-inner-declarations, @typescript-eslint/no-explicit-any */
     async function runPeriodically(time: number): Promise<any> {
       let iterationCount = 0
       let workflowRun // TODO(pweyrich): find the proper type!
 
-      while (workflowRun?.status !== 'completed' && notTimedout()) {
+      while (
+        workflowRun?.status !== 'completed' &&
+        !isTimedout(dispatchedAt, timeout)
+      ) {
         iterationCount++
         core.debug(`Iteration ${iterationCount}`)
         await wait(time)
