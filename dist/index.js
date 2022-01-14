@@ -50,6 +50,8 @@ function run() {
             const interval = parseInt(core.getInput('interval'), 10);
             const timeout = parseInt(core.getInput('timeout'), 10);
             const triggerWorkflow = Boolean(core.getInput('trigger-workflow'));
+            core.debug('debug');
+            core.info('info');
             // store time when we trigger the workflow
             const dispatchedAt = new Date();
             // get authenticated octokit client
