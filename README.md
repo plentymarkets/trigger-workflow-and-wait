@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://github.com/plentymarkets/trigger-workflow-and-wait/actions/workflows/test.yml">
+    <img alt="Github Actions status" src="https://github.com/plentymarkets/trigger-workflow-and-wait/actions/workflows/test.yml/badge.svg">
+  </a>
+</p>
+
 # Trigger workflow and wait
 
 This actions can trigger a workflow via workflow_dispatch event and wait for it to complete.
