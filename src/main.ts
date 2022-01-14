@@ -116,8 +116,7 @@ async function run(): Promise<void> {
     return await runPeriodically(interval * 1000)
   } catch (error) {
     if (error instanceof Error) {
-      core.debug(JSON.stringify(error))
-      core.setFailed(error.message)
+      core.setFailed(error)
     }
   }
 }
