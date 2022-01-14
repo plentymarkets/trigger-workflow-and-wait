@@ -27,7 +27,7 @@ jobs:
         with:
           token: ${{ secrets.PUBLIC_PLENTY_ACTION_TOKEN }}
           owner: plentymarkets
-          repo: trigger-worfklow-and-wait
+          repo: trigger-workflow-and-wait
           workflow_id: dummy.yml
           ref: ${{github.head_ref}}
           timeout: 25
