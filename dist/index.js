@@ -69,8 +69,11 @@ function run() {
             /* eslint-disable no-inner-declarations, @typescript-eslint/no-explicit-any */
             function runPeriodically(time) {
                 return __awaiter(this, void 0, void 0, function* () {
+                    let iterationCount = 0;
                     let workflowRun; // TODO(pweyrich): find the proper type!
                     while (!(workflowRun && workflowRun.status === 'completed' && notTimedout())) {
+                        iterationCount++;
+                        core.debug(`Iteration ${iterationCount}`);
                         yield (0, wait_1.wait)(time);
                         // check whether we already got the related run (in particular its id) in the list
                         if (!workflowRun) {
