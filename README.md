@@ -7,7 +7,7 @@ This actions can trigger a workflow via workflow_dispatch event and wait for it 
 ```yml
 - uses: plentymarkets/trigger-workflow-and-wait@main
   with:
-    # Token
+    # Token to authenticate against the Github API
     token: ''
 
     # Repository that contains the workflow.
