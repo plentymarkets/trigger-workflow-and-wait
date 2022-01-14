@@ -78,7 +78,7 @@ function run() {
                 return __awaiter(this, void 0, void 0, function* () {
                     let iterationCount = 0;
                     let workflowRun; // TODO(pweyrich): find the proper type!
-                    while (!(workflowRun && workflowRun.status === 'completed' && notTimedout())) {
+                    while ((workflowRun === null || workflowRun === void 0 ? void 0 : workflowRun.status) !== 'completed' && notTimedout()) {
                         iterationCount++;
                         core.debug(`Iteration ${iterationCount}`);
                         yield (0, wait_1.wait)(time);

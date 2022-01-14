@@ -47,9 +47,8 @@ async function run(): Promise<void> {
     async function runPeriodically(time: number): Promise<any> {
       let iterationCount = 0
       let workflowRun // TODO(pweyrich): find the proper type!
-      while (
-        !(workflowRun && workflowRun.status === 'completed' && notTimedout())
-      ) {
+
+      while (workflowRun?.status !== 'completed' && notTimedout()) {
         iterationCount++
         core.debug(`Iteration ${iterationCount}`)
         await wait(time)
