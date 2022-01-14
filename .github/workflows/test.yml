@@ -15,10 +15,16 @@ jobs:
           npm install
       - run: |
           npm run all
+
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          milliseconds: 1000
+          token: ${{ secrets.PUBLIC_PLENTY_ACTION_TOKEN }}
+          owner: plentymarkets
+          repo: trigger-workflow-and-wait
+          workflow_id: dummy.yml
+          ref: ${{github.head_ref || github.ref_name}}
+          timeout: 25

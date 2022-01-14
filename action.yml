@@ -1,11 +1,36 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'trigger-worfklow-and-wait'
+description: 'Triggers a workflow and wait for it to complete.'
+author: 'plentymarkets'
 inputs:
-  milliseconds: # change this
+  token:
+    description: Token to perform requests to the github api with
+    default: ${{ github.token }}
+    required: false
+  owner:
+    description: Repository owner
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  repo:
+    description: Repository to start the workflow in
+    required: true
+  workflow_id:
+    description: The ID of the workflow. You can also pass the workflow file name as a string
+    required: true
+  ref:
+    description: Branch to run the workflow from
+    required: true
+  interval:
+    description: Interval (in seconds) to periodically check the workflow status
+    default: '10'
+    required: false
+  timeout:
+    description: Timeout after the given amount of seconds.
+    default: '300'
+    required: false
+  trigger-workflow:
+    description: Whether to trigger the workflow via worfklow_dispatch event
+    default: 'true'
+    required: false
+
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
