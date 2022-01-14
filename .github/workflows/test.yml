@@ -20,6 +20,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: |
+          pwd
+          ls -la
       - uses: ./
         with:
           token: ${{ secrets.PUBLIC_PLENTY_ACTION_TOKEN }}
