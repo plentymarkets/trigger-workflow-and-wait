@@ -38,10 +38,13 @@ async function run(): Promise<void> {
 
     /* eslint-disable no-inner-declarations, @typescript-eslint/no-explicit-any */
     async function runPeriodically(time: number): Promise<any> {
+      let iterationCount = 0
       let workflowRun // TODO(pweyrich): find the proper type!
       while (
         !(workflowRun && workflowRun.status === 'completed' && notTimedout())
       ) {
+        iterationCount++
+        core.debug(`Iteration ${iterationCount}`)
         await wait(time)
         // check whether we already got the related run (in particular its id) in the list
         if (!workflowRun) {
