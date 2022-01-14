@@ -26,5 +26,5 @@ jobs:
           owner: plentymarkets
           repo: trigger-workflow-and-wait
           workflow_id: dummy.yml
-          ref: ${{github.head_ref}}
+          ref: ${{github.head_ref || github.ref_name}}
           timeout: 25
