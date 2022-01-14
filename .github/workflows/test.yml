@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          token: ${{ github.token }}
+          token: ${{ secrets.PUBLIC_PLENTY_ACTION_TOKEN }}
           owner: plentymarkets
           repo: trigger-workflow-and-wait
           workflow_id: dummy.yml
