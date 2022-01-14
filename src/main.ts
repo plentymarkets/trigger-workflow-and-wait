@@ -14,7 +14,7 @@ async function run(): Promise<void> {
     const timeout = parseInt(core.getInput('timeout'), 10)
     const triggerWorkflow = core.getBooleanInput('trigger-workflow')
 
-    core.startGroup('inputs')
+    core.startGroup('Read inputs')
     core.debug(`owner: ${owner}`)
     core.debug(`repo: ${repo}`)
     core.debug(`ref: ${ref}`)
@@ -23,8 +23,6 @@ async function run(): Promise<void> {
     core.debug(`timeout: ${timeout}`)
     core.debug(`trigger-workflow: ${triggerWorkflow}`)
     core.endGroup()
-
-    core.info('info')
 
     // store time when we trigger the workflow
     const dispatchedAt = new Date()
@@ -41,8 +39,6 @@ async function run(): Promise<void> {
         ref
       })
     }
-
-    core.debug('after trigger')
 
     const notTimedout = (): boolean =>
       Date.now() - dispatchedAt.getTime() < timeout * 1000

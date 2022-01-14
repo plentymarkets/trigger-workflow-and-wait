@@ -50,7 +50,7 @@ function run() {
             const interval = parseInt(core.getInput('interval'), 10);
             const timeout = parseInt(core.getInput('timeout'), 10);
             const triggerWorkflow = core.getBooleanInput('trigger-workflow');
-            core.startGroup('inputs');
+            core.startGroup('Read inputs');
             core.debug(`owner: ${owner}`);
             core.debug(`repo: ${repo}`);
             core.debug(`ref: ${ref}`);
@@ -59,7 +59,6 @@ function run() {
             core.debug(`timeout: ${timeout}`);
             core.debug(`trigger-workflow: ${triggerWorkflow}`);
             core.endGroup();
-            core.info('info');
             // store time when we trigger the workflow
             const dispatchedAt = new Date();
             // get authenticated octokit client
@@ -73,7 +72,6 @@ function run() {
                     ref
                 });
             }
-            core.debug('after trigger');
             const notTimedout = () => Date.now() - dispatchedAt.getTime() < timeout * 1000;
             /* eslint-disable no-inner-declarations, @typescript-eslint/no-explicit-any */
             function runPeriodically(time) {
