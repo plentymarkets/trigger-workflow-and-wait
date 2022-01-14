@@ -19,12 +19,12 @@ jobs:
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     permissions:
-      actions: write
+      actions: read
     steps:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          token: ${{ github.token }}
+          token: $GITHUB_TOKEN
           owner: plentymarkets
           repo: trigger-workflow-and-wait
           workflow_id: dummy.yml
