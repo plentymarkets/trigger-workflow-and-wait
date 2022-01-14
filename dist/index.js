@@ -49,8 +49,11 @@ function run() {
             const workflow_id = core.getInput('workflow_id');
             const interval = parseInt(core.getInput('interval'), 10);
             const timeout = parseInt(core.getInput('timeout'), 10);
-            const triggerWorkflow = Boolean(core.getInput('trigger-workflow'));
-            core.debug('debug');
+            const triggerWorkflow = core.getBooleanInput('trigger-workflow');
+            core.startGroup('inputs');
+            core.debug(`interval: ${interval}`);
+            core.debug(`trigger-workflow: ${triggerWorkflow}`);
+            core.endGroup();
             core.info('info');
             // store time when we trigger the workflow
             const dispatchedAt = new Date();
@@ -65,6 +68,7 @@ function run() {
                     ref
                 });
             }
+            core.debug('after trigger');
             const notTimedout = () => Date.now() - dispatchedAt.getTime() < timeout * 1000;
             /* eslint-disable no-inner-declarations, @typescript-eslint/no-explicit-any */
             function runPeriodically(time) {
@@ -122,12 +126,15 @@ function run() {
                     return workflowRun;
                 });
             }
+            core.debug('Starting the loop...');
             // start the loop - get the workflow run, wait for it to complete and report the status.
             return yield runPeriodically(interval * 1000);
         }
         catch (error) {
-            if (error instanceof Error)
+            if (error instanceof Error) {
+                core.debug(JSON.stringify(error));
                 core.setFailed(error.message);
+            }
         }
     });
 }

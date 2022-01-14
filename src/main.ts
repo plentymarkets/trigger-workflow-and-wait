@@ -12,9 +12,13 @@ async function run(): Promise<void> {
     const workflow_id = core.getInput('workflow_id')
     const interval = parseInt(core.getInput('interval'), 10)
     const timeout = parseInt(core.getInput('timeout'), 10)
-    const triggerWorkflow = Boolean(core.getInput('trigger-workflow'))
+    const triggerWorkflow = core.getBooleanInput('trigger-workflow')
 
-    core.debug('debug')
+    core.startGroup('inputs')
+    core.debug(`interval: ${interval}`)
+    core.debug(`trigger-workflow: ${triggerWorkflow}`)
+    core.endGroup()
+
     core.info('info')
 
     // store time when we trigger the workflow
@@ -32,6 +36,8 @@ async function run(): Promise<void> {
         ref
       })
     }
+
+    core.debug('after trigger')
 
     const notTimedout = (): boolean =>
       Date.now() - dispatchedAt.getTime() < timeout * 1000
@@ -100,10 +106,14 @@ async function run(): Promise<void> {
       return workflowRun
     }
 
+    core.debug('Starting the loop...')
     // start the loop - get the workflow run, wait for it to complete and report the status.
     return await runPeriodically(interval * 1000)
   } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
+    if (error instanceof Error) {
+      core.debug(JSON.stringify(error))
+      core.setFailed(error.message)
+    }
   }
 }
 
