@@ -51,7 +51,12 @@ function run() {
             const timeout = parseInt(core.getInput('timeout'), 10);
             const triggerWorkflow = core.getBooleanInput('trigger-workflow');
             core.startGroup('inputs');
+            core.debug(`owner: ${owner}`);
+            core.debug(`repo: ${repo}`);
+            core.debug(`ref: ${ref}`);
+            core.debug(`workflow_id: ${workflow_id}`);
             core.debug(`interval: ${interval}`);
+            core.debug(`timeout: ${timeout}`);
             core.debug(`trigger-workflow: ${triggerWorkflow}`);
             core.endGroup();
             core.info('info');
