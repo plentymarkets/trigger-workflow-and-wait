@@ -123,14 +123,15 @@ function run() {
                     if (!workflowRun) {
                         // timed out!!
                         core.setFailed(`Action timed out. A related workflow run could not be found within ${timeout} seconds.`);
+                        return;
                     }
-                    if ((workflowRun === null || workflowRun === void 0 ? void 0 : workflowRun.status) !== 'completed') {
+                    if (workflowRun.status !== 'completed') {
                         // timed out!!
                         core.setFailed(`Action timed out. The workflow took more than ${timeout} seconds to complete.`);
                     }
-                    if ((workflowRun === null || workflowRun === void 0 ? void 0 : workflowRun.conclusion) === 'failure') {
-                        // watched workflow run failed!
-                        core.setFailed(`Workflow run failed. See ${workflowRun.html_url} for details.`);
+                    // check whether the workflow run has succeeded. If not, set failed.
+                    if (workflowRun.conclusion !== 'success') {
+                        core.setFailed(`Workflow run hasn't succeeded. Conclusion was: ${workflowRun.conclusion}. See ${workflowRun.html_url} for details.`);
                     }
                     return workflowRun;
                 });
