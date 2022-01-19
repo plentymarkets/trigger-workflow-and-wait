@@ -97,17 +97,20 @@ async function run(): Promise<void> {
         core.setFailed(
           `Action timed out. A related workflow run could not be found within ${timeout} seconds.`
         )
+        return
       }
-      if (workflowRun?.status !== 'completed') {
+
+      if (workflowRun.status !== 'completed') {
         // timed out!!
         core.setFailed(
           `Action timed out. The workflow took more than ${timeout} seconds to complete.`
         )
       }
-      if (workflowRun?.conclusion === 'failure') {
-        // watched workflow run failed!
+
+      // check whether the workflow run has succeeded. If not, set failed.
+      if (workflowRun.conclusion !== 'success') {
         core.setFailed(
-          `Workflow run failed. See ${workflowRun.html_url} for details.`
+          `Workflow run hasn't succeeded. Conclusion was: ${workflowRun.conclusion}. See ${workflowRun.html_url} for details.`
         )
       }
       return workflowRun
